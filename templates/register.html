@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styleregister.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <style>
+        .error{
+            color: #d32f2f; /* Using a darker red for error */
+            font-size: 12px;
+            margin-top: 3px;
+        }
+        input.error-border{
+            border: 1px solid #d32f2f !important; /* Ensure border is visible */
+        }
+        .error-message {
+            background-color: #ffebee;
+            color: #d32f2f;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #d32f2f;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+
+        <header id="details">
+            <div id="mail">
+                <i class="ri-mail-line"></i>
+                <h6>hospitalmanagement@gmail.com</h6>
+            </div>
+            <div id="phone">
+                <i class="ri-phone-line"></i>
+                <h6>+91 9867986769</h6>
+            </div>
+            <div id="time">
+                <i class="ri-time-fill"></i>
+                <h6>24 <span>x</span> 7 Support</h6>
+            </div>
+        </header>
+
+        <nav id="unav">
+            <div id="licon">
+                <i class="ri-hospital-line"></i>
+                <h1>HealthPoint</h1>
+            </div>
+            <div id="ricon">
+                <a href="{{ url_for('home') }}" title="Go to Home">
+                    <i class="ri-home-4-fill"></i>
+                </a>
+            </div>
+        </nav>
+
+        <div id="content-container">
+            <div id="info-side">
+                <h2>Welcome to HealthPoint</h2>
+                <p>Secure and efficient healthcare management at your fingertips.</p>
+                <i class="ri-shield-check-line"></i>
+            </div>
+            
+            <div id="register-card">
+                <h1>Create Your Account</h1>
+                
+                {% if error %}
+                    <div class="error-message">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('register') }}" id="registerForm">
+                    
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Enter your full name" required>
+                        <div class="error" id="nameError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" id="username" class="form-control" placeholder="Choose a username" required>
+                        <div class="error" id="usernameError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-input-group">
+                            <input type="password" name="password" id="password" class="form-control" placeholder="Create a secure password" required>
+                            <button type="button" id="togglePassword">
+                                <i class="ri-eye-off-line"></i>
+                            </button>
+                        </div>
+                        <div class="error" id="passwordError"></div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Register</button>
+                </form>
+
+                <div id="already">
+                    <h6>Already have an account?</h6>
+                    <a href="{{ url_for('login') }}">Log in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("registerForm");
+        const nameInput = document.getElementById("name");
+        const usernameInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
+        const nameError = document.getElementById("nameError");
+        const usernameError = document.getElementById("usernameError");
+        const passwordError = document.getElementById("passwordError");
+        const togglePassword = document.getElementById("togglePassword");
+
+        function clearErrors() {
+            nameError.textContent = "";
+            usernameError.textContent = "";
+            passwordError.textContent = "";
+            nameInput.classList.remove("error-border");
+            usernameInput.classList.remove("error-border");
+            passwordInput.classList.remove("error-border");
+        }
+
+        form.addEventListener("submit", function(event){
+            clearErrors();
+            let valid = true;
+
+            // Name validation
+            let nameRegex = /^[A-Za-z\s]+$/;
+            if (!nameRegex.test(nameInput.value.trim())) {
+                nameError.textContent = "Full Name must contain only letters and spaces.";
+                nameInput.classList.add("error-border");
+                valid = false;
+            }
+
+            // Username validation
+            if (usernameInput.value.length < 4 || usernameInput.value.includes(" ")) {
+                usernameError.textContent = "Username must be at least 4 characters and contain no spaces.";
+                usernameInput.classList.add("error-border");
+                valid = false;
+            }
+            
+            // Password validation (min 6 chars, letters and numbers)
+            let passRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+            if (!passRegex.test(passwordInput.value)) {
+                passwordError.textContent = "Password must be at least 6 characters and include both letters and numbers.";
+                passwordInput.classList.add("error-border");
+                valid = false;
+            }
+
+            if (!valid) event.preventDefault();
+        });
+
+        // Toggle Password Visibility
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            const icon = this.querySelector('i');
+            if (type === 'password') {
+                icon.classList.remove('ri-eye-line');
+                icon.classList.add('ri-eye-off-line');
+            } else {
+                icon.classList.remove('ri-eye-off-line');
+                icon.classList.add('ri-eye-line');
+            }
+        });
+    </script>
+</body>
+</html>

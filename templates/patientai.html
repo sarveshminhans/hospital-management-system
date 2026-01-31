@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Patient History</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styleadminhome.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidenav">
+      <div class="brand">
+        <div class="logo">
+          <i class="ri-hospital-line"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Patient Panel</h1>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="{{ url_for('patienthome') }}" class="nav-item ">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="{{ url_for('patient_department') }}" class="nav-item">
+          <span class="material-symbols-outlined">domain</span>
+          <span>Departments</span>
+        </a>
+
+        <a href="{{ url_for('patient_history') }}" class="nav-item ">
+          <span class="material-symbols-outlined">history</span>
+          <span>History</span>
+        </a>
+        <a href="{{ url_for('ai_assistant') }}" class="nav-item active">
+          <span class="material-symbols-outlined">smart_toy</span>
+          <span>AI</span>
+        </a>
+      </nav>
+
+      <div class="sidenav-footer">
+        <a href="{{ url_for('logout') }}" class="nav-item active">
+    <span class="material-symbols-outlined">logout</span>
+    <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="title">Patient Dashboard</div>
+        <div class="topbar-right">
+          <label class="search">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search..." aria-label="Search">
+          </label>
+          <div class="avatar" role="img" aria-label="User avatar"
+               style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBlKEOTVZpE_vATWCMbMAJefrGMoEVYMX9QHz_EuK2s-6sr2juf6_0wPpdJGGCG2r6zGayJNvbBYTAmnaEkqA-a_pcjFE7CE7Ue1kmpYdCEvSkJz1D9A7yVKRPAwGZPqvKvy-mwCwT8OsmN1v9_e0AzkDKksrm4cb4j3v6c3XCxzWm7kx9l2VMqu0G4U8WUR4pcY2dq_58tovr93u5gpeGCVXNZreT6pBvf4NWurt845dde_ZsAkKF5esfmWzB3be2xm1E0tXbm-uo');">
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="Patients">
+          <h2>AI Health Assistant</h2>
+          <div class="table-wrap">
+            <!-- Chat Box -->
+  <div class="chat-container">
+    <div id="chatBox" class="chat-box">
+      <div class="message bot">
+        👋 Hello! I am your AI Health Assistant.  
+        You can ask about symptoms, precautions, medicines, or general health tips.
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input">
+      <input
+        type="text"
+        id="userInput"
+        placeholder="Ask a health-related question..."
+        onkeydown="if(event.key==='Enter') sendMessage()"
+      />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let typingDiv = null;
+
+function appendMessage(text, sender) {
+  const box = document.getElementById("chatBox");
+  const div = document.createElement("div");
+  div.className = "message " + sender;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function showTyping() {
+  const box = document.getElementById("chatBox");
+
+  typingDiv = document.createElement("div");
+  typingDiv.className = "message bot typing";
+  typingDiv.innerHTML = "AI is typing<span class='dots'>.</span>";
+
+  box.appendChild(typingDiv);
+  box.scrollTop = box.scrollHeight;
+}
+
+function hideTyping() {
+  if (typingDiv) {
+    typingDiv.remove();
+    typingDiv = null;
+  }
+}
+
+async function sendMessage() {
+  const input = document.getElementById("userInput");
+  const message = input.value.trim();
+  if (!message) return;
+
+  appendMessage(message, "user");
+  input.value = "";
+
+  showTyping();
+  try {
+    const response = await fetch("/ai/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+
+    const data = await response.json();
+    hideTyping(); // 👈 remove typing
+
+    if (!response.ok || !data.success) {
+      appendMessage(data.error || "AI service error", "bot");
+      return;
+    }
+
+    appendMessage(data.reply, "bot");
+
+  } catch (err) {
+    hideTyping();
+    appendMessage("Server connection failed.", "bot");
+  }
+}
+</script>
+
+</body>
+</html>

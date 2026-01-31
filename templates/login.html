@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylelogin.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <style>
+        .error-message {
+            background-color: #ffebee;
+            color: #d32f2f;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #d32f2f;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+
+        <header id="details">
+            <div id="mail">
+                <i class="ri-mail-line"></i>
+                <h6>hospitalmanagement@gmail.com</h6>
+            </div>
+            <div id="phone">
+                <i class="ri-phone-line"></i>
+                <h6>+91 9867986769</h6>
+            </div>
+            <div id="time">
+                <i class="ri-time-fill"></i>
+                <h6>24 <span>x</span> 7 Support</h6>
+            </div>
+        </header>
+
+        <nav id="unav">
+            <div id="licon">
+                <i class="ri-hospital-line"></i>
+                <h1>HealthPoint Portal</h1>
+            </div>
+            <div id="ricon">
+                <a href="{{ url_for('home') }}" title="Go to Home">
+                    <i class="ri-home-4-fill"></i>
+                </a>
+            </div>
+        </nav>
+
+        <div id="content-container">
+            
+            <div id="login-card">
+                <h1>Sign In</h1>
+                <h2>Welcome Back!</h2>
+                
+                {% if error %}
+                    <div class="error-message">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('login') }}">
+                    
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" id="username" class="form-control" placeholder="Enter your username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-input-group">
+                            <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required>
+                            <button type="button" id="togglePassword">
+                                <i class="ri-eye-off-line"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Login</button>
+                </form>
+
+                <div id="register-link">
+                    <h6>Don't have an account?</h6>
+                    <a href="{{ url_for('register') }}">Register now</a>
+                </div>
+            </div>
+
+            <div id="info-side">
+                <i class="ri-heart-pulse-line"></i>
+                <h3>Secure and efficient healthcare management at your fingertips.</h3>
+                <p>Access your records, schedule appointments, and communicate with your care team easily.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Password Visibility
+        const passwordInput = document.getElementById("password");
+        const togglePassword = document.getElementById("togglePassword");
+        
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            const icon = this.querySelector('i');
+            if (type === 'password') {
+                icon.classList.remove('ri-eye-line');
+                icon.classList.add('ri-eye-off-line');
+            } else {
+                icon.classList.remove('ri-eye-off-line');
+                icon.classList.add('ri-eye-line');
+            }
+        });
+    </script>
+</body>
+</html>

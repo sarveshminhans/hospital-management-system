@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylelogin.css') }}">
+    <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+    rel="stylesheet"
+/>
+</head>
+<body>
+    <div id="main">
+        <div id="details">
+            <div id="mail">
+                <i class="ri-mail-line"></i>
+                <h6>hospitalmanagement@gmail.com</h6>
+            </div>
+            <div id="phone">
+                <i class="ri-phone-line"></i>
+                <h6>+91 9867986769</h6>
+            </div>
+            <div id="time">
+                <i class="ri-time-fill"></i>
+                <h6>24 <span>x</span> 7</h6>
+            </div>
+        </div>
+        <div id="unav">
+            <div id="licon">
+                <i class="ri-hospital-line"></i>
+            </div>
+            <div id="ricon">
+                <a href="{{ url_for('home') }}">
+                    <i class="ri-home-4-fill"></i>
+                </a>
+            </div>
+        </div>
+        <div id="card">
+            <h1>Log-<span>In</span></h1>
+            <div id="lc">
+                <div id="llc"></div>
+            </div>
+        </div>
+        <div id="login">
+            <div id="loginside">
+                {% if error %}
+                    <div class="error-message">{{ error }}</div>
+                {% endif %}
+                
+                <form method="POST" action="{{ url_for('login') }}">
+                    <div class="log">
+                        <h3>Username</h3>
+                        <input type="text" name="username" class="form-control" required>
+                    </div>
+                    <div class="log">
+                        <h3>Password</h3>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Login  <span><i class="ri-login-box-line"></i></span></button>
+                </form>
+                <div id="already">
+                    <h6>Do not have a account?</h6>
+                    <a href="{{ url_for('register') }}">Register</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

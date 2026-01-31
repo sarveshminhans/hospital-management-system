@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Health Assistant</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ai_assistant.css') }}">
+</head>
+<body>
+
+<div class="ai-page">
+
+  <!-- Header -->
+  <header class="ai-header">
+    <div class="title">
+      <span class="material-symbols-outlined">smart_toy</span>
+      AI Health Assistant
+    </div>
+    <a href="{{ url_for('patienthome') }}" class="back-btn">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Back to Dashboard
+    </a>
+  </header>
+
+  <!-- Chat Box -->
+  <div class="chat-container">
+    <div id="chatBox" class="chat-box">
+      <div class="message bot">
+        👋 Hello! I am your AI Health Assistant.  
+        You can ask about symptoms, precautions, medicines, or general health tips.
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input">
+      <input
+        type="text"
+        id="userInput"
+        placeholder="Ask a health-related question..."
+        onkeydown="if(event.key==='Enter') sendMessage()"
+      />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let typingDiv = null;
+
+function appendMessage(text, sender) {
+  const box = document.getElementById("chatBox");
+  const div = document.createElement("div");
+  div.className = "message " + sender;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function showTyping() {
+  const box = document.getElementById("chatBox");
+
+  typingDiv = document.createElement("div");
+  typingDiv.className = "message bot typing";
+  typingDiv.innerHTML = "AI is typing<span class='dots'>.</span>";
+
+  box.appendChild(typingDiv);
+  box.scrollTop = box.scrollHeight;
+}
+
+function hideTyping() {
+  if (typingDiv) {
+    typingDiv.remove();
+    typingDiv = null;
+  }
+}
+
+async function sendMessage() {
+  const input = document.getElementById("userInput");
+  const message = input.value.trim();
+  if (!message) return;
+
+  appendMessage(message, "user");
+  input.value = "";
+
+  showTyping();
+  try {
+    const response = await fetch("/ai/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+
+    const data = await response.json();
+    hideTyping(); // 👈 remove typing
+
+    if (!response.ok || !data.success) {
+      appendMessage(data.error || "AI service error", "bot");
+      return;
+    }
+
+    appendMessage(data.reply, "bot");
+
+  } catch (err) {
+    hideTyping();
+    appendMessage("Server connection failed.", "bot");
+  }
+}
+</script>
+
+</body>
+</html>

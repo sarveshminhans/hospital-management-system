@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Doctors</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styleadminhome.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidenav">
+      <div class="brand">
+        <div class="logo">
+          <i class="ri-hospital-line"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Admin Panel</h1>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="{{ url_for('admin_home') }}" class="nav-item">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="{{ url_for('admin_doctor') }}" class="nav-item active">
+          <span class="material-symbols-outlined">stethoscope</span>
+          <span>Doctors</span>
+        </a>
+
+        <a href="{{ url_for('admin_patient') }}" class="nav-item ">
+          <span class="material-symbols-outlined">groups</span>
+          <span>Patients</span>
+        </a>
+
+        <a href="{{ url_for('admin_appointment') }}" class="nav-item ">
+          <span class="material-symbols-outlined">calendar_month</span>
+          <span>Appointments</span>
+        </a>
+
+        <a href="{{ url_for('admin_department') }}" class="nav-item">
+          <span class="material-symbols-outlined">domain</span>
+          <span>Departments</span>
+        </a>
+      </nav>
+      <div class="sidenav-footer">
+        <a href="{{ url_for('logout') }}" class="nav-item active">
+    <span class="material-symbols-outlined">logout</span>
+    <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <div class="title">Admin Dashboard</div>
+        <div class="topbar-right">
+          <label class="search">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search..." aria-label="Search">
+          </label>
+          <div class="avatar" role="img" aria-label="User avatar"
+               style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD_AlTK4xY0kmCVsHrXS147JtJZem2mlC2K_cmOyO7Tb8pHpDmD1uEWETqJmY_t_8XOV0_Oh6VKtwcD0dirsms-p9MX2KxCJvnP36yfB76n8Bam_HsaNKTjIiwuYrSV2UHofq-oOqHQYBgd3toriijxRuOIYAkDZ8B7F-bBw40arP20K-dJEAgqtr4t-51_oZssGnzH-SZig4Az8-5KJvh1QrXJYFRopoyXr-5xHYUlKqddlRrNRFDTTwQ6jUFR-heJFv6VoAsw9w8');">
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        <h1 class="welcome">Welcome, Admin!</h1>
+
+        <section class="stats">
+          <article class="card">
+            <div class="card-label">Total Doctors</div>
+            <div class="card-value">{{ data.doctors | length }}</div>
+          </article>
+        </section>
+        <section class="pill">
+          <a href="{{ url_for('add_doctor') }}" class="pill add">ADD DOCTORS</a>
+        </section>
+        <section class="Patients">
+          <h2>Doctors</h2>
+          <div class="table-wrap">
+            <table class="appointments">
+              <thead>
+                <tr>
+                  <th>SR No.</th>
+                  <th>Doctor Name</th>
+                  <th>Doctor Id</th>
+                  <th>Department</th>
+                  <th>Experience</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for doc in data.doctors %}
+                <tr>
+                  <td class="row-title">{{ loop.index }}</td>
+                  <td class="row-title">{{ doc.name }}</td>
+                  <td>{{ doc.id}}</td>
+                  <td>{{ doc.department }}</td>
+                  <td>{{ doc.experience }} years</td>                  
+                  <td class="actions-cell">
+                    <div class="action">
+                      <form method="get" action="{{ url_for('edit_doctor', doctor_id=doc['id']) }}" style="display:inline;">
+                        <button type="submit" class="action edit" title="Edit">
+                          <span class="material-symbols-outlined">edit</span>
+                        </button>
+                      </form>                    
+                      <form method="post" action="{{ url_for('delete_doctor', doctor_id=doc['user_id']) }}" class="inline-form confirm-delete" data-name="{{ doc.name | e }}">
+                        <button type="submit" class="action delete" title="Delete">
+                          <span class="material-symbols-outlined">delete</span>
+                        </button>
+                      </form>
+                      <form method="post"
+                        action="{{ url_for('toggle_blacklist_doctor', doctor_id=doc['id']) }}"
+                        class="inline-form confirm-action"
+                        data-name="{{ doc.name | e }}"
+                        data-status="{{ doc.blacklisted }}">                                      
+                      {% if doc.blacklisted == 1 %}
+                          <button type="submit" class="action blacklist" title="Blacklist">
+                              <span class="material-symbols-outlined">block</span>
+                          </button>
+                      {% else %}
+                          <button type="submit" class="action unblock" title="Unblacklist">
+                              <span class="material-symbols-outlined">lock_open</span>
+                          </button>
+                      {% endif %}
+                    </form>
+                    </div>
+                  </td>
+                </tr>
+                {% else %}
+                <tr>
+                  <td colspan="5">No Doctors found.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+<script>
+document.addEventListener('submit', function(e) {
+  const form = e.target;
+  if (form.classList.contains('confirm-delete')) {
+    const name = form.dataset.name || 'this item';
+    const isBlacklist = form.action.includes('/blacklist');
+    const message = isBlacklist
+      ? `Add doctor "${name}" to blacklist? This will prevent them from being assigned to new patients.`
+      : `Delete doctor "${name}"? This will remove the doctor and related records.`;
+
+    if (!confirm(message)) {
+      e.preventDefault();
+    }
+    return;
+  }
+  if (form.classList.contains('confirm-action')) {
+    const name = form.dataset.name || 'this item';
+    const status = String(form.dataset.status);
+    const actionMsg = status === "1"
+      ? `Block doctor "${name}"? This will prevent them from being assigned to new patients.`
+      : `Unblock doctor "${name}"? This will restore access for the doctor.`;
+
+    if (!confirm(actionMsg)) {
+      e.preventDefault();
+    }
+    return;
+  }
+});
+</script>
+
+</body>
+</html>
+    

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylehome.css') }}">
+    <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+    rel="stylesheet"
+/>
+</head>
+<body>
+    <div id="main">
+        
+        <div id="details">
+            <div id="mail">
+                <i class="ri-mail-line"></i>
+                <h6>hospitalmanagement@gmail.com</h6>
+            </div>
+            <div id="phone">
+                <i class="ri-phone-line"></i>
+                <h6>+91 9867986769</h6>
+            </div>
+            <div id="time">
+                <i class="ri-time-fill"></i>
+                <h6>24 <span>x</span> 7</h6>
+            </div>
+        </div>
+        <div id="mvideo">
+      <video autoplay muted loop playsinline>
+        <source src="https://vivanti.eu/storage/videos/hero_bit.mp4" type="video/mp4" />
+      </video>
+    </div>
+        <div id="unav">
+            <div id="licon">
+                <i class="ri-hospital-line"></i>
+            </div>
+            <div id="ulink">
+                <a href="home.html">Home</a>
+                <a id="" href="login.html">Login</a>
+                <a href="contact.html">Contact</a>
+                <a href="about.html">About</a>
+            </div>
+            <div id="ricon"><i class="ri-menu-line"></i></div>
+        </div>
+        <div id="card">
+            <h1>Hospital Management System</h1>
+            <div id="lc">
+                <div id="llc"></div>
+                <div id="lrc"><p>Book appointments, manage doctors, and track your treatment history—  all in one place.</p></div>
+            </div>
+        </div>
+        <div id="lnav">
+            <a href="{{ url_for('register') }}" class="button-link">REGISTER</a>
+            <a href="{{ url_for('login') }}" class="button-link">LOGIN</a>
+            <div id="cube">
+                <i class="ri-add-fill"></i>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

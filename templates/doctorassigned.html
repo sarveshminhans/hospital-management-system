@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Doctor Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styleadminhome.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidenav">
+      <div class="brand">
+        <div class="logo">
+          <i class="ri-hospital-line"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Doctor Assigned</h1>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="{{ url_for('doctor_home') }}" class="nav-item ">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="{{ url_for('doctor_assigned') }}" class="nav-item active">
+          <span class="material-symbols-outlined">groups</span>
+          <span>Assigned Patients</span>
+        </a>
+        <a href="{{ url_for('doctor_availability') }}" class="nav-item {% if active=='appointments' %}active{% endif %}">
+          <span class="material-symbols-outlined">calendar_month</span>
+          <span>Provide Availability</span>
+        </a>
+      </nav>
+      <div class="sidenav-footer">
+        <a href="{{ url_for('logout') }}" class="nav-item active">
+    <span class="material-symbols-outlined">logout</span>
+    <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="title">Doctor Dashboard</div>
+        <div class="topbar-right">
+          <label class="search">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search..." aria-label="Search">
+          </label>
+          <div class="avatar" role="img" aria-label="User avatar"
+               style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAI1CR85j32kj27xc_JwXBHMOH79W9KeK8KvSP_iPpCwdzTmBBY2uS3KBgro9wv7IznFbfwSdAs_A_AV4_Z0YrbtzRUViPwh0knGHHDC1wzKTY2CADSyD_EMPCTZTWPgkbklD1zL0GY-An6kz2rvuC_nthqdlK30zWM1NUBmyKvtQ0Yeja8hAJPe9UTwDQUxh8esfbJ2ni-pFbw-QIE-VSiLE3vVhedaEpyzynNoHuSqHjLr1ZqAsHX6WP4tD5PTdpkGKinqxRTk9M');">
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="stats">
+          <article class="card">
+            <div class="card-label">Total Assigned Patients</div>
+            <div class="card-value">{{ data.appointments | length }}</div>
+          </article>
+        </section>
+        <section class="Patients">
+          <h2>Assigned Patients</h2>
+          <div class="table-wrap">
+            <table class="appointments">
+              <thead>
+                <tr>
+                  <th>SR No.</th>
+                  <th>Patient Name</th>
+                  <th>Patient history</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for appoint in data.appointments %}
+                <tr>
+                  <td class="row-title">{{ loop.index }}</td>
+                  <td class="row-title">{{ appoint.patient_name }}</td>
+                  <td>{{ appoint.department }}</td>
+                  <td><span class="pill confirmed">Confirmed</span></td>
+                </tr>
+                {% else %}
+                <tr>
+                  <td colspan="5">No upcoming appointments found.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
+    

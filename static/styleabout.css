@@ -1,0 +1,105 @@
+html,body{
+    height: 100%;
+    width: 100%;
+}
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Gilroy", sans-serif;
+}
+#main{
+    height: 100%;
+    width: 100vw;
+    background-color: #ADD6F8;
+}
+#details{
+    width: 100vw;
+    height: 20px;
+    background-color: rgba(34, 31, 31, 0.897);
+    color: white;
+    display: flex;
+    align-items: center;
+    font-size: 1.5vw;
+    padding: 10px;
+    gap: 60px;
+    letter-spacing: 1.5px;
+}
+#mail,#phone,#time{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#unav{
+    height: 10%;
+    width: 100%;
+    display: flex;
+    position: relative;
+    font-weight: 800;
+    font-size: 2vw;
+}
+#unav a{
+    position: relative;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
+#licon{
+    top: 50%;
+    left: 5%;
+    position: absolute;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translate(-50%,-50%);
+    border: 3px solid white;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+}
+
+#ricon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 50%;
+    right: 5%;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    background-color: rgb(255, 255, 255);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+}
+#ricon i{
+    color: black;
+}
+#card{
+    width: 50%;
+    height: 20%;
+    margin-left: 50px;
+    color: white;
+}
+#card h1{
+    font-size: 7vw;
+    letter-spacing: 2px;
+    line-height: 110px;
+}
+#card h1 span{
+    color: black;
+}
+#labout{
+    width: 30vw;
+    height: 30vw;
+    margin-left: 35vw;
+    font-size: 1.5vw;
+    background-color: white;
+    border-radius: 20px;
+    padding: 65px;
+}
+#labout h3{
+    margin-top: 20px;
+    letter-spacing: 1px;
+}

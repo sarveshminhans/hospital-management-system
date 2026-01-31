@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Doctor Availability</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styleadminhome.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidenav">
+      <div class="brand">
+        <div class="logo">
+          <i class="ri-hospital-line"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Patient Panel</h1>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="{{ url_for('patienthome') }}" class="nav-item ">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="{{ url_for('patient_department') }}" class="nav-item active">
+          <span class="material-symbols-outlined">domain</span>
+          <span>Departments</span>
+        </a>
+        <a href="{{ url_for('patient_history') }}" class="nav-item ">
+          <span class="material-symbols-outlined">history</span>
+          <span>History</span>
+        </a>
+      </nav>
+      <div class="sidenav-footer">
+        <a href="{{ url_for('logout') }}" class="nav-item active">
+          <span class="material-symbols-outlined">logout</span>
+          <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="title">Patient Dashboard</div>
+        <div class="topbar-right">
+          <label class="search">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search..." aria-label="Search">
+          </label>
+          <div class="avatar" role="img" aria-label="User avatar"
+              tyle="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBlKEOTVZpE_vATWCMbMAJefrGMoEVYMX9QHz_EuK2s-6sr2juf6_0wPpdJGGCG2r6zGayJNvbBYTAmnaEkqA-a_pcjFE7CE7Ue1kmpYdCEvSkJz1D9A7yVKRPAwGZPqvKvy-mwCwT8OsmN1v9_e0AzkDKksrm4cb4j3v6c3XCxzWm7kx9l2VMqu0G4U8WUR4pcY2dq_58tovr93u5gpeGCVXNZreT6pBvf4NWurt845dde_ZsAkKF5esfmWzB3be2xm1E0tXbm-uo');">
+          </div>
+        </div>
+      </header>
+
+     <main class="content">
+        {% block title %}Doctor Availability{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div>
+      <h2 style="margin:0;font-size:18px">Doctor Availability</h2>
+      <div style="color:#64748b;font-size:13px">View slots and book an available slot</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <a href="{{ url_for('patient_department') }}" class="btn">Back to Departments</a>
+    </div>
+  </div>
+
+  <div id="availabilityGrid" class="grid" aria-live="polite">
+    {% for day in days %}
+      <div class="cell date">{{ day.display }}</div>
+      {% for slot in day.slots %}
+        <div
+          class="cell slot-cell {% if slot.status %}available-selected{% else %}cell-unchecked{% endif %} {% if slot.booked %}cell-booked{% endif %}"
+          data-date="{{ day.date }}"
+          data-slot="{{ slot.key }}"
+          role="group"
+          aria-label="{{ slot.label }} on {{ day.display }}"
+        >
+          <div style="font-weight:600">{{ slot.label }}</div>
+          <div style="font-size:12px;color:#64748b;margin-top:8px;display:flex;gap:8px;align-items:center;">
+            {% if slot.status|int == 1 %}
+              {% if slot.booked %}
+                <span class="pill confirmed">Booked</span>
+                <button class="btn" disabled>Booked</button>
+              {% else %}
+                <span class="pill available">Available</span>
+                <button class="btn book-btn" data-date="{{ day.date }}" data-slot="{{ slot.key }}" data-doctor="{{ doctor.id }}">Book</button>
+              {% endif %}
+            {% else %}
+              <span class="pill cancelled">Unavailable</span>
+              <button class="btn" disabled>Unavailable</button>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    {% endfor %}
+  </div>
+
+  <div class="card-actions" style="margin-top:16px">
+    <small style="color:#64748b">Click <strong>Book</strong> to make an appointment. You must be logged in as a patient.</small>
+  </div>
+</div>
+{% endblock %}
+      </main>
+    </div>
+  </div>
+
+<script>
+(function () {
+  function showToast(msg, isError) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.position = 'fixed';
+    t.style.right = '20px';
+    t.style.bottom = '20px';
+    t.style.padding = '10px 14px';
+    t.style.borderRadius = '8px';
+    t.style.boxShadow = '0 6px 18px rgba(2,6,23,0.08)';
+    t.style.background = isError ? '#fee2e2' : '#d1fae5';
+    t.style.color = isError ? '#991b1b' : '#065f46';
+    document.body.appendChild(t);
+    setTimeout(()=> t.remove(), 3000);
+  }
+
+  async function bookSlot(doctorId, date, slot, button) {
+    button.disabled = true;
+    const prevText = button.textContent;
+    button.textContent = 'Booking...';
+    try {
+      const resp = await fetch("{{ url_for('patient_book_slot') }}", {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'same-origin',
+        body: JSON.stringify({ doctor_id: doctorId, date: date, slot: slot })
+      });
+      const data = await resp.json().catch(()=>({ok:false, message:'Invalid server response'}));
+      if (!resp.ok || !data.ok) {
+        showToast(data.message || 'Booking failed', true);
+        button.disabled = false;
+        button.textContent = prevText;
+        return;
+      }
+      showToast(data.message || 'Appointment confirmed');
+      const parent = button.closest('.slot-cell');
+      if (parent) {
+        const pill = parent.querySelector('.pill');
+        if (pill) {
+          pill.textContent = 'Booked';
+          pill.classList.remove('available');
+          pill.classList.add('confirmed');
+        }
+        button.textContent = 'Booked';
+        button.disabled = true;
+      }
+    } catch (err) {
+      showToast('Booking failed: ' + (err.message || ''), true);
+      button.disabled = false;
+      button.textContent = prevText;
+    }
+  }
+
+  document.getElementById('availabilityGrid').addEventListener('click', function (e) {
+    const btn = e.target.closest('.book-btn');
+    if (!btn) return;
+    const date = btn.dataset.date;
+    const slot = btn.dataset.slot;
+    const doctorId = btn.dataset.doctor;
+    bookSlot(doctorId, date, slot, btn);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styleregister.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <style>
+        .error{
+            color: red;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+        input.error-border{
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+
+        <div id="details">
+            <div id="mail">
+                <i class="ri-mail-line"></i>
+                <h6>hospitalmanagement@gmail.com</h6>
+            </div>
+            <div id="phone">
+                <i class="ri-phone-line"></i>
+                <h6>+91 9867986769</h6>
+            </div>
+            <div id="time">
+                <i class="ri-time-fill"></i>
+                <h6>24 <span>x</span> 7</h6>
+            </div>
+        </div>
+
+        <div id="unav">
+            <div id="licon">
+                <i class="ri-hospital-line"></i>
+            </div>
+            <div id="ricon">
+                <a href="{{ url_for('home') }}">
+                    <i class="ri-home-4-fill"></i>
+                </a>
+            </div>
+        </div>
+
+        <div id="card">
+            <h1>Register</h1>
+            <div id="lc">
+                <div id="llc"></div>
+            </div>
+        </div>
+
+        <div id="login">
+            <div id="loginside">
+                {% if error %}
+                    <div class="error-message">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('register') }}" id="registerForm">
+                    
+                    <div class="log">
+                        <h3>Name</h3>
+                        <input type="text" name="name" id="name" class="form-control" required>
+                        <div class="error" id="nameError"></div>
+                    </div>
+
+                    <div class="log">
+                        <h3>Username</h3>
+                        <input type="text" name="username" id="username" class="form-control" required>
+                        <div class="error" id="usernameError"></div>
+                    </div>
+
+                    <div class="log">
+                        <h3>Password</h3>
+                        <input type="password" name="password" id="password" class="form-control" required>
+                        <div class="error" id="passwordError"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Register</button>
+                </form>
+
+                <div id="already">
+                    <h6>already have a account?</h6>
+                    <a href="{{ url_for('login') }}">Login</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const form = document.getElementById("registerForm");
+
+        form.addEventListener("submit", function(event){
+            let valid = true;
+
+            let name = document.getElementById("name");
+            let username = document.getElementById("username");
+            let password = document.getElementById("password");
+
+            let nameError = document.getElementById("nameError");
+            let usernameError = document.getElementById("usernameError");
+            let passwordError = document.getElementById("passwordError");
+
+            nameError.textContent = "";
+            usernameError.textContent = "";
+            passwordError.textContent = "";
+            name.classList.remove("error-border");
+            username.classList.remove("error-border");
+            password.classList.remove("error-border");
+
+            let nameRegex = /^[A-Za-z ]+$/;
+            if (!nameRegex.test(name.value)) {
+                nameError.textContent = "Name must contain only letters and spaces.";
+                name.classList.add("error-border");
+                valid = false;
+            }
+            if (username.value.length < 4 || username.value.includes(" ")) {
+                usernameError.textContent = "Username must be at least 4 characters and without spaces.";
+                username.classList.add("error-border");
+                valid = false;
+            }
+            let passRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+            if (!passRegex.test(password.value)) {
+                passwordError.textContent = "Password must be at least 6 characters, include letters and numbers.";
+                password.classList.add("error-border");
+                valid = false;
+            }
+
+            if (!valid) event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>

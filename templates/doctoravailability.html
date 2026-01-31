@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Doctor Availability</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styleadminhome.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidenav">
+      <div class="brand">
+        <div class="logo">
+          <i class="ri-hospital-line"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Doctor Panel</h1>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="{{ url_for('doctor_home') }}" class="nav-item ">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="{{ url_for('doctor_assigned') }}" class="nav-item ">
+          <span class="material-symbols-outlined">groups</span>
+          <span>Assigned Patients</span>
+        </a>
+        <a href="{{ url_for('doctor_availability') }}" class="nav-item active">
+          <span class="material-symbols-outlined">calendar_month</span>
+          <span>Provide Availability</span>
+        </a>
+      </nav>
+      <div class="sidenav-footer">
+        <a href="{{ url_for('logout') }}" class="nav-item active">
+    <span class="material-symbols-outlined">logout</span>
+    <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="title">Doctor Dashboard</div>
+        <div class="topbar-right">
+          <label class="search">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search..." aria-label="Search">
+          </label>
+          <div class="avatar" role="img" aria-label="User avatar"
+               style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAI1CR85j32kj27xc_JwXBHMOH79W9KeK8KvSP_iPpCwdzTmBBY2uS3KBgro9wv7IznFbfwSdAs_A_AV4_Z0YrbtzRUViPwh0knGHHDC1wzKTY2CADSyD_EMPCTZTWPgkbklD1zL0GY-An6kz2rvuC_nthqdlK30zWM1NUBmyKvtQ0Yeja8hAJPe9UTwDQUxh8esfbJ2ni-pFbw-QIE-VSiLE3vVhedaEpyzynNoHuSqHjLr1ZqAsHX6WP4tD5PTdpkGKinqxRTk9M');">
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        {% block title %}Doctor Availability{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div>
+      <h2 style="margin:0;font-size:18px">Edit Availability</h2>
+      <div style="color:#64748b;font-size:13px">Toggle slots to mark available / unavailable</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button id="saveBtn" class="btn primary">Save</button>
+      <button id="resetBtn" class="btn" style="background:#fff;border:1px solid #e6eef5">Reset</button>
+    </div>
+  </div>
+
+  <div id="availabilityGrid" class="grid" aria-live="polite">
+    {% for day in days %}
+      <div class="cell date">{{ day.display }}</div>
+      {% for slot in day.slots %}
+        <button
+          type="button"
+          class="cell {% if slot.status %}available-selected{% endif %} {% if slot.status %}cell-checked{% endif %} {% if slot.status == 0 %}cell-unchecked{% endif %}"
+          data-date="{{ day.date }}"
+          data-slot="{{ slot.key }}"
+          aria-pressed="{{ 'true' if slot.status else 'false' }}"
+        >
+          <div style="font-weight:600">{{ slot.label }}</div>
+          <div style="font-size:12px;color:#64748b;margin-top:6px">
+            {% if slot.status %}Available{% else %}Unavailable{% endif %}
+          </div>
+        </button>
+      {% endfor %}
+    {% endfor %}
+  </div>
+
+  <div class="card-actions">
+    <button id="saveBtnBottom" class="btn primary">Save</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const grid = document.getElementById('availabilityGrid');
+  const makeAvailabilityMap = () => {
+    const map = {};
+    grid.querySelectorAll('[data-date]').forEach(el => {
+      const d = el.dataset.date;
+      const s = el.dataset.slot;
+      const pressed = el.getAttribute('aria-pressed') === 'true';
+      map[d] = map[d] || {};
+      map[d][s] = pressed ? 1 : 0;
+    });
+    return map;
+  };
+  grid.addEventListener('click', function(e){
+    const btn = e.target.closest('[data-date][data-slot]');
+    if(!btn) return;
+    const currently = btn.getAttribute('aria-pressed') === 'true';
+    const next = !currently;
+    btn.setAttribute('aria-pressed', next ? 'true' : 'false');
+
+    const labelEl = btn.querySelector('div:last-child');
+    if(labelEl) labelEl.textContent = next ? 'Available' : 'Unavailable';
+
+    if(next) {
+      btn.style.borderColor = '#16a34a';
+      btn.style.color = '#16a34a';
+      btn.style.background = 'rgba(16,185,129,0.06)';
+      btn.style.fontWeight = '600';
+    } else {
+      btn.style.border = '1px solid #e6eef5';
+      btn.style.color = '#0f1723';
+      btn.style.background = 'transparent';
+      btn.style.fontWeight = '400';
+    }
+  });
+
+  const save = async () => {
+    const payload = { availability: makeAvailabilityMap() };
+    try {
+      const resp = await fetch("{{ url_for('doctor_availability') }}", {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload),
+        credentials: 'same-origin'
+      });
+      if (!resp.ok) throw new Error('Network error');
+      const data = await resp.json();
+      showToast(data.message || 'Availability saved');
+    } catch (err) {
+      showToast('Save failed: ' + (err.message || ''), true);
+    }
+  };
+
+  document.getElementById('saveBtn').addEventListener('click', save);
+  document.getElementById('saveBtnBottom').addEventLi
+  document.getElementById('resetBtn').addEventListener('click', () => location.reload());
+
+  function showToast(msg, isError){
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.position = 'fixed';
+    t.style.right = '20px';
+    t.style.bottom = '20px';
+    t.style.padding = '10px 14px';
+    t.style.borderRadius = '8px';
+    t.style.boxShadow = '0 6px 18px rgba(2,6,23,0.08)';
+    t.style.background = isError ? '#fee2e2' : '#d1fae5';
+    t.style.color = isError ? '#991b1b' : '#065f46';
+    document.body.appendChild(t);
+    setTimeout(()=> t.remove(), 3000);
+  }
+})();
+</script>
+{% endblock %}
+      </main>
+    </div>
+  </div>
+</body>
+</html>
+    

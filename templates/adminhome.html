@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styleadminhome.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidenav">
+      <div class="brand">
+        <div class="logo">
+          <i class="ri-hospital-line"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Admin Panel</h1>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="{{ url_for('admin_home') }}" class="nav-item active">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="{{ url_for('admin_doctor') }}" class="nav-item">
+          <span class="material-symbols-outlined">stethoscope</span>
+          <span>Doctors</span>
+        </a>
+
+        <a href="{{ url_for('admin_patient') }}" class="nav-item ">
+          <span class="material-symbols-outlined">groups</span>
+          <span>Patients</span>
+        </a>
+
+        <a href="{{ url_for('admin_appointment') }}" class="nav-item {% if active=='appointments' %}active{% endif %}">
+          <span class="material-symbols-outlined">calendar_month</span>
+          <span>Appointments</span>
+        </a>
+
+        <a href="{{ url_for('admin_department') }}" class="nav-item">
+          <span class="material-symbols-outlined">domain</span>
+          <span>Departments</span>
+        </a>
+      </nav>
+      <div class="sidenav-footer">
+        <a href="{{ url_for('logout') }}" class="nav-item active">
+    <span class="material-symbols-outlined">logout</span>
+    <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="title">Admin Dashboard</div>
+        <div class="topbar-right">
+          
+          <form action="/search" method="get">
+            <label class="search">
+              <span class="material-symbols-outlined">search</span>
+              <input type="text" name="q" placeholder="Search..." aria-label="Search" required>
+            </label>
+          </form>
+          <div class="avatar" role="img" aria-label="User avatar"
+               style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD_AlTK4xY0kmCVsHrXS147JtJZem2mlC2K_cmOyO7Tb8pHpDmD1uEWETqJmY_t_8XOV0_Oh6VKtwcD0dirsms-p9MX2KxCJvnP36yfB76n8Bam_HsaNKTjIiwuYrSV2UHofq-oOqHQYBgd3toriijxRuOIYAkDZ8B7F-bBw40arP20K-dJEAgqtr4t-51_oZssGnzH-SZig4Az8-5KJvh1QrXJYFRopoyXr-5xHYUlKqddlRrNRFDTTwQ6jUFR-heJFv6VoAsw9w8');">
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        <h1 class="welcome">Welcome, Admin!</h1>
+
+        <section class="stats">
+          <article class="card">
+            <div class="card-label">Total Doctors</div>
+            <div class="card-value">{{ data.doctors | length }}</div>
+          </article>
+          <article class="card">
+            <div class="card-label">Total Patients</div>
+            <div class="card-value">{{ data.patients | length }}</div>
+          </article>
+          <article class="card">
+            <div class="card-label">Total Appointments</div>
+            <div class="card-value">{{ data.appointments | length }}</div>
+          </article>
+          <article class="card">
+            <div class="card-label">Total Departments</div>
+            <div class="card-value">{{ data.departments | length }}</div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
+    

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Doctor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styleadddoctor.css') }}">
+    <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+    rel="stylesheet"
+/>
+</head>
+<body>
+    <div id="main">
+        <div id="unav">
+            <div id="licon">
+                <i class="ri-hospital-line"></i>
+            </div>
+            <div id="ricon">
+                <a href="{{ url_for('admin_doctor') }}" title="Back to Dashboard">
+                    <i class="ri-arrow-go-back-line"></i>
+                </a>
+            </div>
+        </div>
+        <div id="card">
+            <h1>Add<span>Doctor</span></h1>
+        </div>
+        <div id="login">
+            <div id="loginside">
+                {% if error %}
+                    <div class="error-message">{{ error }}</div>
+                {% endif %}
+                
+                <form method="POST" action="{{ url_for('add_doctor') }}">
+                    <div class="log">
+                        <h3 >Fullname</h3>
+                        <input type="text" id="fullname" name="fullname" required>
+                    </div>
+                    <div class="log">
+                        <h3 >Username</h3>
+                        <input type="text" id="username" name="username" required>
+                    </div>                    
+                    <div class="log">
+                        <h3>Department</h3>
+                        <select id="specialization" name="specialization" required>
+                            <option value="">-- Select Department --</option>
+                            {% for dept in departments %}
+                                <option value="{{ dept.name }}">{{ dept.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>                   
+                    <div class="log">
+                        <h3 >Experience (years)</h3>
+                        <input type="number" id="experience" name="experience" min="0" required>
+                    </div>                    
+                    <button type="submit" class="create-btn">Create</button>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

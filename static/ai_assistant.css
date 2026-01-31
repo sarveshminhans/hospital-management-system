@@ -1,0 +1,136 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  background: #f5f7f8;
+  color: #0f1723;
+}
+
+.ai-page {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 16px;
+}
+
+/* Header */
+.ai-header {
+  background: #ffffff;
+  border: 1px solid #e6eef5;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.ai-header .title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+.back-btn:hover {
+  color: #2563eb;
+}
+
+/* Chat Container */
+.chat-container {
+  background: #ffffff;
+  border: 1px solid #e6eef5;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  height: 520px;
+}
+
+/* Messages */
+.chat-box {
+  flex: 1;
+  padding: 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.message {
+  max-width: 75%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.message.bot {
+  align-self: flex-start;
+  background: #f1f5f9;
+  color: #0f1723;
+}
+
+.message.user {
+  align-self: flex-end;
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+/* Input */
+.chat-input {
+  border-top: 1px solid #e6eef5;
+  padding: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #e6eef5;
+  font-size: 14px;
+  outline: none;
+}
+
+.chat-input button {
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chat-input button:hover {
+  background: #2563eb;
+}
+.message.typing {
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.dots::after {
+  content: '';
+  animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+  0% { content: '.'; }
+  33% { content: '..'; }
+  66% { content: '...'; }
+}

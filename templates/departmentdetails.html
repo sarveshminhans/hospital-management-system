@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ department.name }} Department</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styledepartment.css') }}">
+    <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+    rel="stylesheet"
+/>
+</head>
+<body>
+    <div id="main">
+        <div id="details">
+            <div id="mail">
+                <i class="ri-mail-line"></i>
+                <h6>hospitalmanagement@gmail.com</h6>
+            </div>
+            <div id="phone">
+                <i class="ri-phone-line"></i>
+                <h6>+91 9867986769</h6>
+            </div>
+            <div id="time">
+                <i class="ri-time-fill"></i>
+                <h6>24 <span>x</span> 7</h6>
+            </div>
+        </div>
+        <div id="unav">
+            <div id="licon">
+                <i class="ri-hospital-line"></i>
+            </div>
+            <div id="ltext">
+                <h1>Department of {{ department.name }}</h1>
+            </div>
+            <div id="ricon">
+                <a href="{{ url_for('logout') }}" title="Logout">
+                    <i class="ri-logout-box-r-line"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div id="department-card">
+            <div id="overview-section">
+                <h2>Overview</h2>
+                <p>{{ department.overview }}</p>
+            </div>
+            
+            <div id="doctors-list-section">
+                <h2>Doctors' List</h2>
+                <div class="list-container">
+                    {% for doctor in department.doctors %}
+                    <div class="doctor-item">
+                        <span class="doctor-name">{{ doctor.name }} ({{ doctor.experience }} yrs)</span>
+                        <div class="doctor-actions">
+                            <button class="btn btn-check-availability">check availability</button>
+                            <button class="btn btn-view-details">view details</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

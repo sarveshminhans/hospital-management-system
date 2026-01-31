@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styleadddepartment.css') }}">
+    <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+    rel="stylesheet"
+/>
+</head>
+<body>
+    <div id="main">
+        <div id="unav">
+            <div id="licon">
+                <i class="ri-hospital-line"></i>
+            </div>
+            <div id="ricon">
+                <a href="{{ url_for('admin_department') }}" title="Back to Dashboard">
+                    <i class="ri-arrow-go-back-line"></i>
+                </a>
+            </div>
+        </div>
+        <div id="card">
+            <h1>Add Department</span></h1>
+        </div>
+        <div id="login">
+            <div id="loginside">
+                {% if error %}
+                    <div class="error-message">{{ error }}</div>
+                {% endif %}
+                
+                <form method="POST" action="{{ url_for('add_department') }}">
+                    <div class="log">
+                        <h3 >Department Name</h3>
+                        <input type="text" id="fullname" name="fullname" required>
+                    </div>
+                    <div class="log">
+                        <h3 >Description</h3>
+                        <textarea id="description" name="description" rows="6" cols="30"  ></textarea>
+                    </div>                                       
+                    <button type="submit" class="create-btn">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
